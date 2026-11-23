@@ -1,0 +1,7 @@
+# Comments and blank lines are ignored
+node_modules/
+.git/
+*.tmp
+*.log
+Thumbs.db
+.DS_Store
