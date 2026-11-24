@@ -36,3 +36,20 @@ def test_move_detection(tmp_path):
     assert result.moved == [("old-ideas.txt", "notes/ideas.txt")]
     assert not result.new
     assert not result.deleted
+
+
+def test_fast_comparison_does_not_hash_files(tmp_path):
+    local = tmp_path / "local"
+    backup = tmp_path / "backup"
+    local.mkdir()
+    backup.mkdir()
+    (local / "new.txt").write_text("new")
+    (backup / "old.txt").write_text("old")
+    local_scan = scan_folder(local)
+    backup_scan = scan_folder(backup)
+
+    result = compare_scans(local_scan, backup_scan, deep=False)
+
+    assert result.moved == []
+    assert all(record.sha256 is None for record in local_scan.files.values())
+    assert all(record.sha256 is None for record in backup_scan.files.values())

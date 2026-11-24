@@ -37,6 +37,9 @@ def compare_scans(local: Scan, backup: Scan, deep: bool = False, mtime_tolerance
     for path in sorted(backup_paths - local_paths):
         result.deleted[path] = backup.files[path]
 
+    if not deep:
+        return result
+
     ensure_hashes(local)
     ensure_hashes(backup)
     new_by_hash: dict[str, list[str]] = defaultdict(list)
